@@ -34,10 +34,12 @@ public class Machine extends Player{
 	
 	public void Play()
 	{
-		while(true)
+		robot.delay(1500);
+	
+		while(gameplay.getTimer().isRunning())
 		{
 			ballPosX = gameplay.getBallPosX();
-			paddleCenter = gameplay.getPaddlePosX() + gameplay.getPaddleWidth()/2;
+			paddleCenter = gameplay.getPaddlePosX() + gameplay.PADDLE_WIDTH/2;
 			
 			if(ballPosX - paddleCenter < 0)
 			{
