@@ -15,48 +15,30 @@ import javax.swing.Timer;
 
 public class Gameplay extends JPanel implements KeyListener, ActionListener{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Timer timer;
 	private int delay = 10;
-	
-
-	
-	public int getGeneration() {
-		return generation;
-	}
-
-
-	public void setGeneration(int generation) {
-		this.generation = generation;
-	}
-
-	Random rdm;
-	public final int INITIAL_BALL_SPEED = 5; //para treino melhor aumentar
-	public final int PADDLE_WIDTH = 30; 
-	public final int PADDLE_HEIGTH = 10; 
-	private int ballNumber = 0; //o jogo vai somente até 20 bolas
+		
+	public final int INITIAL_BALL_SPEEDX = 1;
+	public final int INITIAL_BALL_SPEEDY = 2;
+	public final int PADDLE_WIDTH = 60; 
+	public final int PADDLE_HEIGTH = 20;	
+	public final int ARENA_BOUNDS_INF = 35;
+    public final int ARENA_BOUNDS_SUP =	580;
+	public final int PADDLE1_POSY = ARENA_BOUNDS_SUP - 40;
+	public final int PADDLE2_POSY =	ARENA_BOUNDS_INF + 40;
+	private int ballNumber = 0; //o jogo vai somente ate 20 bolas
 	private int ballsLost = 0;
-	private int ballSpeed = 10;
+	private int ballSpeedX = 2;
+	private int ballSpeedY = 1;
 	private int ballPosX;
 	private int ballPosY = 50;
-	private int paddlePosX = 290;
+	private int paddle1PosX = 290;
+	private int paddle2PosX = 290;
 
 	private int fitness = 0; //for text
 	private int genome = 0; //for text
 	private int generation = 0; //for text 
-	
-	public int getScore() {
-		return score;  //score é baseado na distancia que o paddle chega da ball agora
-	}
-
-
-	public void setScore(int score) {
-		this.score = score;
-	}
-
 	private int score = 0;
 	
 	
@@ -65,31 +47,23 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener{
 		addKeyListener(this);
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
-		setRdm(new Random());
 		timer = new Timer(delay,this);
 	}
-
-	
-	public Timer getTimer() {
-		return timer;
-	}
-
-	public void setTimer(Timer timer) {
-		this.timer = timer;
-	}
-
 	public void paint(Graphics g)
-	{
-		
+	{	
 		//background
 		g.setColor(Color.black);
-		g.fillRect(0, 0, 600, 600);
-		
-		
+		g.fillRect(0, 0, 600, 600);	
+		//arena
+		g.setColor(Color.yellow);
+		g.drawLine(ARENA_BOUNDS_INF, ARENA_BOUNDS_INF, ARENA_BOUNDS_INF, ARENA_BOUNDS_SUP);
+		g.drawLine(ARENA_BOUNDS_INF, ARENA_BOUNDS_INF, ARENA_BOUNDS_SUP, ARENA_BOUNDS_INF);
+		g.drawLine(580, ARENA_BOUNDS_INF, ARENA_BOUNDS_SUP, ARENA_BOUNDS_SUP);
+		g.drawLine(ARENA_BOUNDS_INF, ARENA_BOUNDS_SUP, ARENA_BOUNDS_SUP, ARENA_BOUNDS_SUP);
 		//x-distance
-		g.setColor(Color.white);
-		g.drawLine(paddlePosX, 555, ballPosX, 555);
-
+		g.setColor(Color.blue);
+		g.drawLine(paddle1PosX, 555, ballPosX, 555);
+		g.drawLine(paddle1PosX, 555, ballPosX, 555);
 		//score
 		g.setColor(Color.white);
 		g.setFont(new Font("TimesRoman", Font.BOLD, 20));
@@ -97,58 +71,34 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener{
 		g.drawString("Balls Lost  "+ballsLost, 20, 30);
 		//g.drawString("Fitness "+fitness, 240, 30);
 		g.drawString("Genome "+genome, 340, 30);
-		g.drawString("Gen " + generation, 150,30);
-		
-		//paddle
-		g.setColor(Color.white);
-		g.fillRect(paddlePosX, 550, PADDLE_WIDTH , 10);
-		
-		//ball
+		g.drawString("Gen " + generation, 175,30);
+		//paddle1
 		g.setColor(Color.blue);
+		g.fillRect(paddle1PosX, PADDLE1_POSY, PADDLE_WIDTH , 10);
+		//paddle2
+		g.setColor(Color.red);
+		g.fillRect(paddle2PosX, PADDLE2_POSY, PADDLE_WIDTH , 10);
+		//ball
+		g.setColor(Color.yellow);
 		g.fillOval(ballPosX, ballPosY, 18, 18);
-	
 		g.dispose();
-		
 	}
 	
-	public int getFitness() {
-		return fitness;
-	}
-
-
-	public void setFitness(int fitness) {
-		this.fitness = fitness;
-	}
-
-
-	public int getGenome() {
-		return genome;
-	}
-
-
-	public void setGenome(int genome) {
-		this.genome = genome;
-	}
-
-
 	public void moveRight()
 	{
-
-		paddlePosX += 7;
-		paddlePosX += 7;
-		
+		paddle1PosX += 13;
+		paddle2PosX += 13;	
 	}
 	
 	public void moveLeft()
 	{
-
-		paddlePosX -= 7;
-		paddlePosX -= 7;
+		paddle1PosX -= 13;
+		paddle2PosX -= 13;
 	}
 	
 	public boolean endBall()
 	{
-		if (ballPosY > 580)
+		if (ballPosY > ARENA_BOUNDS_SUP || ballPosY < ARENA_BOUNDS_INF)
 		{
 			ballsLost++;
 			return true;
@@ -158,35 +108,33 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener{
 	public void newBall()
 	{
 		ballNumber++;
-		ballPosY = 50;
-		ballPosX = 	rdm.nextInt(500);
+		ballPosY = 250;
+		ballPosX = new Random().nextInt(500) + ARENA_BOUNDS_INF;
 	}
 	
 	//SET INITIAL
 	public void newGame()
 	{
-		
 		score = 0;
-		ballSpeed = INITIAL_BALL_SPEED;
+		ballSpeedX = INITIAL_BALL_SPEEDX;
+		ballSpeedY = INITIAL_BALL_SPEEDY;
 		ballNumber = 0;
-		ballPosY = 50;
+		ballPosY = 250;
+		ballPosX = new Random().nextInt(500) + ARENA_BOUNDS_INF;
 		ballsLost = 0;		
-		paddlePosX = 290;
+		paddle1PosX = 290;
 		timer.start();
-
-	
 	}
 
 	public void endGame()
 	{
-		//PAUSAR
 		timer.stop();
 	}
 	
-	public boolean ballHitsPaddle()
+	public boolean ballHitspaddle1()
 	{
-		Rectangle r1 = new Rectangle(ballPosX, ballPosY, 18, 12);
-		Rectangle r2 = new Rectangle(paddlePosX, 500, PADDLE_WIDTH , PADDLE_HEIGTH);
+		Rectangle r1 = new Rectangle(ballPosX, ballPosY, 12, 7);
+		Rectangle r2 = new Rectangle(paddle1PosX, PADDLE1_POSY, PADDLE_WIDTH , PADDLE_HEIGTH);
 		if (r1.intersects(r2))
 		{
 			return true;
@@ -197,36 +145,55 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener{
 		}
 	}
 	
+	public boolean ballHitspaddle2()
+	{
+		Rectangle r1 = new Rectangle(ballPosX, ballPosY, 12, 7);
+		Rectangle r2 = new Rectangle(paddle2PosX, PADDLE2_POSY, PADDLE_WIDTH , PADDLE_HEIGTH);
+		if (r1.intersects(r2))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}	
+	
+	private boolean ballHitsArenaBorder() {
+		if(ballPosX < ARENA_BOUNDS_INF || ballPosX > ARENA_BOUNDS_SUP - 10) {
+			return true;
+		}
+		return false;
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
 		
 		if (ballNumber >= 20)
 		{
 			endGame();
+		
 		}
-		
-		ballPosY += ballSpeed; //runs the ball
-		
+		ballPosX += ballSpeedX; //runs the ball
+		ballPosY += ballSpeedY; //runs the ball
 		if (endBall())
 		{
 			score += scoreCalc();
 			newBall();
 		}
-		
-		if(ballHitsPaddle())
+		if(ballHitspaddle1() || ballHitspaddle2())
 		{
 			score += scoreCalc();
-			newBall();
+			this.ballSpeedY = this.ballSpeedY * -1;
 		}
-		
+		if(ballHitsArenaBorder()) {
+			this.ballSpeedX = this.ballSpeedX * -1;
+		}
 		repaint();
 	}
 
 	public int scoreCalc()
 	{
-		int distance = Math.abs(ballPosX-paddlePosX ); //distance fromb ball to paddle
-		
+		int distance = Math.abs(ballPosX-paddle1PosX ); //distance fromb ball to paddle1
 		
 		if(distance > 570) { return 0; }
 		if(distance > 550) { return 2; }
@@ -278,41 +245,32 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener{
 		if(distance > 0) { return 130; }
 		
 		return 0;
-		
 	}
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_RIGHT && (paddlePosX+PADDLE_WIDTH ) < 600)
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT && (paddle1PosX+PADDLE_WIDTH ) < ARENA_BOUNDS_SUP - 2)
 		{
 			moveRight();
 		}
 		else 
 		{
-			if(e.getKeyCode() == KeyEvent.VK_LEFT && (paddlePosX) > 0)
+			if(e.getKeyCode() == KeyEvent.VK_LEFT && (paddle1PosX) > ARENA_BOUNDS_INF + 10)
 			{
 				moveLeft();
 			}
-		}
-
-		
-		
+		}		
 	}
-
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	
-	
 	//GETS AND SETS
 	
 	public int getBallsLost() {
@@ -321,23 +279,52 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener{
 	public void setBallsLost(int ballsLost) {
 		this.ballsLost = ballsLost;
 	}
-
 	public int getBallPosX()
 	{
 		return ballPosX;
 	}
-	public int getPaddlePosX()
+	public int getPaddle1PosX()
 	{
-		return paddlePosX;
+		return paddle1PosX;
 	}
 	public void setBallPosX(int ballPosX)
 	{
 		this.ballPosX = ballPosX;
 	}
-	
-	public void setRdm(Random rdm) {
-		this.rdm = rdm;
+	public int getGeneration() {
+		return generation;
 	}
+	public void setGeneration(int generation) {
+		this.generation = generation;
+	}
+	public int getFitness() {
+		return fitness;
+	}
+	public void setFitness(int fitness) {
+		this.fitness = fitness;
+	}
+	public int getGenome() {
+		return genome;
+	}
+	public void setGenome(int genome) {
+		this.genome = genome;
+	}
+	public Timer getTimer() {
+		return timer;
+	}
+	public void setTimer(Timer timer) {
+		this.timer = timer;
+	}
+	public int getScore() {
+		return score;  //score ï¿½ baseado na distancia que o paddle1 chega da ball agora
+	}
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+
+
+
 
 	
 }

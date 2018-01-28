@@ -14,12 +14,6 @@ public class App {
 
 	public static void main(String[] args) throws AWTException, InterruptedException
 	{
-		
-		
-		
-		
-
-		
 		//fitness : baseado na distancia que o paddle chega da ball antes dela sumir
 		
 		
@@ -27,18 +21,20 @@ public class App {
 		
 		Gameplay gameplay = new Gameplay();
 		JFrame frame = new JFrame();
-		GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(gameplay);
+		Machine machine = new Machine(gameplay);
+		machine.getGameplay().newGame();
 
+		
+		//GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(gameplay);
 		frame.setBounds(200,200,600,600);
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(gameplay);
 		frame.setVisible(true);
-		
 		robot.delay(1000);
 		
-		geneticAlgorithm.startBySavedGenom();
+		//geneticAlgorithm.startBySavedGenom();
 
 		
 

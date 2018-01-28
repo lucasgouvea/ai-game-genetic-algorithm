@@ -39,8 +39,7 @@ public class Machine extends Player{
 		while(gameplay.getTimer().isRunning())
 		{
 			ballPosX = gameplay.getBallPosX();
-			paddleCenter = gameplay.getPaddlePosX() + gameplay.PADDLE_WIDTH/2;
-			
+			paddleCenter = gameplay.getPaddle1PosX() + gameplay.PADDLE_WIDTH/2;
 			if(ballPosX - paddleCenter < 0)
 			{
 				robot.keyPress(KeyEvent.VK_LEFT);
@@ -49,7 +48,6 @@ public class Machine extends Player{
 			{
 				robot.keyPress(KeyEvent.VK_RIGHT);
 			}
-
 		}
 			
 	}

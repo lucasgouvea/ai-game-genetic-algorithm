@@ -48,7 +48,7 @@ public class Genome {
 	public int CalculateOutput()
 	{
 		int ballPosX = gameplay.getBallPosX();
-		int paddleCenter = gameplay.getPaddlePosX() + gameplay.PADDLE_WIDTH/2;
+		int paddleCenter = gameplay.getPaddle1PosX() + gameplay.PADDLE_WIDTH/2;
 		distanceFromBall = ballPosX - paddleCenter;
 		distanceFromBall = distanceFromBall / 300; //adjustment -> -1 < distance/300 < 1
 		output = distanceFromBall * a + b;
